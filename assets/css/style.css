@@ -2,6 +2,45 @@
     margin: 0;
     padding: 0;
 }
-.white {
-    color: white;
+
+.line_through {
+    text-decoration: line-through;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.plus,.star {
+    transition: 2s;
+    max-width: 30px;
+    max-height: 30px;
+}
+
+.plus:hover,.star:hover {
+    transition: 2s;
+    transform: rotate(180deg);
+    max-width: 30px;
+    max-height: 30px;
+}
+
+.pencil,.garbage,.palette {
+    transition: 0.5s;
+    max-width: 30px;
+    max-height: 30px;
+}
+
+.pencil:hover,.garbage:hover,.palette:hover {
+    transition: 0.5s;
+    max-width: 35px;
+    max-height: 35px;
+}
+
+.color {
+    min-width: 80px;    
+}
+
+.priority {
+    color: rgb(76, 76, 219);
+    font-weight: bold;
 }

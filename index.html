@@ -23,11 +23,16 @@
             <header class="py-3 mb-3 border-bottom">
                 <div class="container-fluid d-grid gap-3 align-items-center" style="grid-template-columns: 1fr 2fr;">
                     <h2>Todo - список дел</h2>
-                    <div class="d-flex align-items-center">
-                        <form class="w-100 me-3">
-                            <input type="search" class="form-control" placeholder="Search...">
-                        </form>
-                        <button class="btn btn-primary" @click="setNoteTitle">Добавить</button>
+                    <div class="d-flex align-items-center justify-content-end">
+                        <div class="d-flex flex-row align-items-center">
+                            <form class="w-100 me-3">
+                                <input type="search" class="form-control" placeholder="Найти..." v-model="search">      
+                            </form>
+                            <button class="my-4 btn btn-primary me-3" @click="fillFilterNotes">Найти</button>
+                        </div>
+                       
+                        <img @click="setNoteTitle" class="plus pointer" src="assets/img/plus.png" alt="">
+                     
                     </div>
                 </div>
             </header>
@@ -40,15 +45,24 @@
                     <button class="my-4 btn btn-primary" @click="addNote">Добавить</button>
                 </div>
             </div>
+            <button class="my-4 btn btn-primary" @click="sortTitle">Сортировка по тайтлу </button>
+
+            <div class="notes" v-if="showSortNotesTitle">
+                <h2 class="text-center">Блокноты (title)</h2>
+                <todo-list v-for="(list,index) in sortNotesTitle" :list="list" :index="index" :index_list="index"></todo-list>
+            </div>
 
             <div class="notes" v-if="showNotes">
                 <h2 class="text-center">Блокноты</h2>
                 <todo-list v-for="(list,index) in notes" :list="list" :index="index" :index_list="index"></todo-list>
             </div>
 
+            <div class="notes" v-if="showFilter">
+                <h2 class="text-center">Блокноты (с)</h2>
+                <todo-list v-for="(list,index) in filterNotes" :list="list" :index="index" :index_list="index"></todo-list>
+            </div>
 
         </div>
-
     </div>
 </body>
 
