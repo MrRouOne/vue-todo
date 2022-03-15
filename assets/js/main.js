@@ -76,7 +76,8 @@ Vue.component('list-item', {
     },
     setPriority() {
       if (app.status == 'default') {
-        app.notes[this.index_list].items[this.index_item].priority = !app.notes[this.index_list].items[this.index_item].priority
+        app.notes[this.index_list].items[this.index_item].priority = !app.notes[this.index_list].items[this.index_item].priority;
+        (app.notes[this.index_list].items[this.index_item].priority) ? app.notes[this.index_list].priorityCount += 1 : app.notes[this.index_list].priorityCount--
       }
       else if (app.status == 'filtered') {
         let note = app.filterNotes[this.index_list]
@@ -98,6 +99,12 @@ Vue.component('todo-list', {
       color: '',
     }
   },
+  computed: {
+    dateFormat() {
+      let currentDate = new Date(this.list.date);
+      return currentDate.getHours() + ":" + currentDate.getMinutes()
+    },
+  },
   template: `<div :style="{borderTop: list.border}" class="mt-xl-5">
   <div class="my-3 p-3 bg-body rounded shadow-sm">
 
@@ -108,7 +115,7 @@ Vue.component('todo-list', {
                 <img @click="editList" class="pencil pointer me-3" src="assets/img/pencil.png" alt="pencil">
                 <img  @click="deleteList" class="garbage pointer" src="assets/img/garbage.png" alt="garbage">
             </div>
-            <div class="d-flex flex-row align-items-center color">
+            <div class="d-flex flex-row align-items-center color ">
               <form class="w-100 me-3 ">
                 <input type="color" class=" btn-light form-control-color" v-model="color">
               </form>
@@ -138,7 +145,7 @@ Vue.component('todo-list', {
               <button class="btn btn-primary" @click="addItem">Добавить</button>
           </div>
           <small class="d-block text-start mt-3">
-              {{list.date}}
+              {{dateFormat}}
           </small>
       </div>
 
@@ -189,7 +196,13 @@ Vue.component('todo-list', {
       this.changeName = ''
     },
     setColor() {
-      app.notes[this.index_list].border = this.color + ' 5px solid'
+      if (app.status == 'default') {
+        app.notes[this.index_list].border = this.color + ' 5px solid'
+      }
+      else if (app.status == 'filtered') {
+        let note = app.filterNotes[this.index_list]
+        app.notes[note.i].border = this.color + ' 5px solid'
+      }
       app.saveItems()
       this.color = ''
     },
@@ -205,12 +218,15 @@ const app = new Vue({
     showNotes: true,
     showFilter: false,
     showSortNotesTitle: false,
+    showSortNotesPriority: false,
+    showSortNotesDate: false,
+    showSortBar: true,
     notes: [],
     title: '',
     currentEditList: '',
     filterNotes: [],
     search: '',
-    status: 'default'
+    status: 'default',
   },
   created() {
     this.notes = JSON.parse(localStorage.getItem("notes") || '[]')
@@ -218,30 +234,39 @@ const app = new Vue({
 
   computed: {
     currentDate() {
-      let currentDate = new Date();
-      return datetime = currentDate.getHours() + ":" + currentDate.getMinutes()
+      return Number(new Date());
     },
     sortNotesTitle() {
       return this.notes.sort((prev, next) => {
         if (prev.title < next.title) return -1;
         if (prev.title < next.title) return 1;
       });
-
+    },
+    sortNotesPriority() {
+      return this.notes.sort((prev, next) => next.priorityCount - prev.priorityCount)
+    },
+    sortNotesDate() {
+      return this.notes.sort((prev, next) => prev.date - next.date)
     }
   },
   methods: {
     addNote() {
       if (this.title.trim() == '') { return false }
-      this.notes.push({ title: this.title, showTitle: true, items: [], date: this.currentDate, border: 'black 5px solid' })
+      this.notes.push({ title: this.title, showTitle: true, items: [], date: this.currentDate, border: 'black 5px solid', priorityCount: 0 })
       this.saveItems()
       this.title = ''
       this.showInputAddNote = false
       this.showNotes = true
+      this.showSortBar = true
     },
     setNoteTitle() {
       this.showNotes = false
       this.showFilter = false
       this.showInputAddNote = true
+      this.showSortNotesTitle = false
+      this.showSortNotesPriority = false
+      this.showSortNotesDate = false
+      this.showSortBar = false
     },
     saveItems() {
       const parsed = JSON.stringify(this.notes);
@@ -251,13 +276,15 @@ const app = new Vue({
       if (this.search.trim() == '') {
         this.status = 'default'
         this.filterNotes = []
-        this.showSortNotesTitle= false
+        this.showSortNotesTitle = false
         this.showNotes = true
         this.showFilter = false
         return false
       }
 
-      this.showSortNotesTitle= false,
+      this.showSortNotesTitle = false
+      this.showSortNotesPriority = false
+      this.showSortNotesDate = false
       this.showInputAddNote = false
       this.status = 'filtered'
       this.filterNotes = []
@@ -279,8 +306,28 @@ const app = new Vue({
       this.search = ''
     },
     sortTitle() {
+      this.showFilter = false
+      this.showInputAddNote = false
       this.showNotes = false
+      this.showSortNotesPriority = false
+      this.showSortNotesDate = false
       this.showSortNotesTitle = true
-    }
+    },
+    sortPririty() {
+      this.showFilter = false
+      this.showInputAddNote = false
+      this.showNotes = false
+      this.showSortNotesTitle = false
+      this.showSortNotesDate = false
+      this.showSortNotesPriority = true
+    },
+    sortDate() {
+      this.showFilter = false
+      this.showInputAddNote = false
+      this.showNotes = false
+      this.showSortNotesTitle = false
+      this.showSortNotesPriority = false
+      this.showSortNotesDate = true
+    },
   },
 });

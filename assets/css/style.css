@@ -44,3 +44,35 @@
     color: rgb(76, 76, 219);
     font-weight: bold;
 }
+
+.fade-enter-active, .fade-leave-active {
+    transition: opacity .1s;
+}
+
+.fade-enter, .fade-leave-to {
+    opacity: 0;
+}
+
+.fade-note-enter-active {
+    transition: opacity 1s;
+}
+
+.fade-note-leave-active {
+    transition: opacity .4s;
+}
+
+.fade-note-enter, .fade-note-leave-to {
+    opacity: 0;
+}
+
+.fade-sort-enter-active {
+    transition: opacity .5s;
+}
+
+.fade-sort-leave-active {
+    transition: opacity .2s;
+}
+
+.fade-sort-enter, .fade-sort-leave-to {
+    opacity: 0;
+}

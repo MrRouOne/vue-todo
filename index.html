@@ -26,46 +26,85 @@
                     <div class="d-flex align-items-center justify-content-end">
                         <div class="d-flex flex-row align-items-center">
                             <form class="w-100 me-3">
-                                <input type="search" class="form-control" placeholder="Найти..." v-model="search">      
+                                <input type="search" class="form-control" placeholder="Найти..." v-model="search">
                             </form>
                             <button class="my-4 btn btn-primary me-3" @click="fillFilterNotes">Найти</button>
                         </div>
-                       
+
                         <img @click="setNoteTitle" class="plus pointer" src="assets/img/plus.png" alt="">
-                     
+
                     </div>
                 </div>
             </header>
-
-            <div v-if="showInputAddNote" class="add_note d-flex flex-column align-items-center">
-                <h2 class="text-center">Добавить блокнот</h2>
-                <div class="col-8 ">
-                    <label class="form-label h3">Название</label>
-                    <input class="form-control" type="text" v-model="title">
-                    <button class="my-4 btn btn-primary" @click="addNote">Добавить</button>
+            <transition name="fade">
+                <div v-if="showInputAddNote" class="add_note d-flex flex-column align-items-center">
+                    <h2 class="text-center">Добавить блокнот</h2>
+                    <div class="col-8 ">
+                        <label class="form-label h3">Название</label>
+                        <input class="form-control" type="text" v-model="title">
+                        <button class="my-4 btn btn-primary" @click="addNote">Добавить</button>
+                    </div>
                 </div>
-            </div>
-            <button class="my-4 btn btn-primary" @click="sortTitle">Сортировка по тайтлу </button>
+            </transition>
+            <transition name="fade-note">
+                <div v-if="showSortBar" class="filter_bar mb-xl-4">
+                    <h2 class="text-center">Сортировка</h2>
+                    <div class="d-flex align-items-center justify-content-start">
+                        <button class="my-4 btn btn-primary me-3" @click="sortTitle">Сортировка по названию</button>
+                        <button class="my-4 btn btn-primary me-3" @click="sortDate">Сортировка по дате</button>
+                        <button class="my-4 btn btn-primary me-3" @click="sortPririty">Сортировка по приоритету</button>
+                    </div>
+                </div>
+            </transition>
 
-            <div class="notes" v-if="showSortNotesTitle">
-                <h2 class="text-center">Блокноты (title)</h2>
-                <todo-list v-for="(list,index) in sortNotesTitle" :list="list" :index="index" :index_list="index"></todo-list>
-            </div>
+            <transition name="fade-sort">
+                <div class="notes" v-if="showSortNotesTitle">
+                    <h2 class="text-center">Блокноты</h2>
+                    <div class="text-center h4 mt-xl-3" v-if="sortNotesTitle.length == 0"> Пусто</div>
+                    <todo-list v-for="(list,index) in sortNotesTitle" :list="list" :index="index" :index_list="index">
+                    </todo-list>
+                </div>
+            </transition>
 
-            <div class="notes" v-if="showNotes">
-                <h2 class="text-center">Блокноты</h2>
-                <todo-list v-for="(list,index) in notes" :list="list" :index="index" :index_list="index"></todo-list>
-            </div>
+            <transition name="fade-sort">
+                <div class="notes" v-if="showSortNotesDate">
+                    <h2 class="text-center">Блокноты</h2>
+                    <div class="text-center h4 mt-xl-3" v-if="sortNotesDate.length == 0"> Пусто</div>
+                    <todo-list v-for="(list,index) in sortNotesDate" :list="list" :index="index" :index_list="index">
+                    </todo-list>
+                </div>
+            </transition>
 
-            <div class="notes" v-if="showFilter">
-                <h2 class="text-center">Блокноты (с)</h2>
-                <todo-list v-for="(list,index) in filterNotes" :list="list" :index="index" :index_list="index"></todo-list>
-            </div>
+            <transition name="fade-sort">
+                <div class="notes" v-if="showSortNotesPriority">
+                    <h2 class="text-center">Блокноты</h2>
+                    <div class="text-center h4 mt-xl-3" v-if="sortNotesPriority.length == 0"> Пусто</div>
+                    <todo-list v-for="(list,index) in sortNotesPriority" :list="list" :index="index"
+                        :index_list="index">
+                    </todo-list>
+                </div>
+            </transition>
+
+            <transition name="fade-note">
+                <div class="notes" v-if="showNotes">
+                    <h2 class="text-center">Блокноты</h2>
+                    <div class="text-center h4 mt-xl-3" v-if="notes.length == 0"> Пусто</div>
+                    <todo-list v-for="(list,index) in notes" :list="list" :index="index" :index_list="index">
+                    </todo-list>
+                </div>
+            </transition>
+
+            <transition name="fade-note">
+                <div class="notes" v-if="showFilter">
+                    <h2 class="text-center">Блокноты</h2>
+                    <div class="text-center h4 mt-xl-3" v-if="filterNotes.length == 0"> Пусто</div>
+                    <todo-list v-for="(list,index) in filterNotes" :list="list" :index="index" :index_list="index">
+                    </todo-list>
+                </div>
+            </transition>
 
         </div>
     </div>
 </body>
 
 </html>
-
-
